@@ -13,7 +13,7 @@ Patch0:			xtouch-correct-device.patch.bz2
 Patch1:			xtouch-conf-file.patch.bz2
 URL:			http://unknown_originally_from_Transmeta's_Midori_Linux			
 BuildRoot:		%{_tmppath}/%{name}-buildroot
-BuildRequires:		XFree86-devel
+BuildRequires:		X11-devel
 	
 %description
 Xtouch enables the use of a mk712 touch screen as an input device for X.
