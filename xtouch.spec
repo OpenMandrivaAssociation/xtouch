@@ -12,6 +12,7 @@ Source:			xtouch-0.2_ML1.0.0-beta3-8.tar.bz2
 Patch0:			xtouch-correct-device.patch.bz2
 Patch1:			xtouch-conf-file.patch.bz2
 URL:			http://unknown_originally_from_Transmeta's_Midori_Linux			
+BuildRoot:		%{_tmppath}/%{name}-buildroot
 BuildRequires:		X11-devel
 	
 %description
