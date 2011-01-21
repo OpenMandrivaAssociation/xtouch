@@ -16,7 +16,8 @@ URL:			http://unknown_originally_from_Transmeta's_Midori_Linux
 BuildRoot:		%{_tmppath}/%{name}-buildroot
 BuildRequires:		libx11-devel
 BuildRequires:		libxtst-devel
-	
+BuildRequires:		libxt-devel
+
 %description
 Xtouch enables the use of a mk712 touch screen as an input device for X.
 If the configuration file is empty, a calibration routine is launched when
