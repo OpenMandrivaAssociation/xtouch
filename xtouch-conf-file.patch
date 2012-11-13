@@ -1,0 +1,85 @@
+--- xtouch-0.2/src/xtouch.c.conf	2004-03-19 12:40:20.000000000 -0500
++++ xtouch-0.2/src/xtouch.c	2004-03-19 12:53:17.000000000 -0500
+@@ -19,7 +19,7 @@
+  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  */
+ 
+-#define SAVE_FILE "/tmp/config/xtouch"
++#define SAVE_FILE "/etc/xtouch"
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -35,6 +35,8 @@
+ #include <X11/Xmd.h>
+ #include <X11/extensions/XTest.h>
+ #include <X11/extensions/xtestext1.h>
++#include <pwd.h>
++#include <sys/stat.h>
+ 
+ Display *mydisplay;
+ int myscreen, screen_width, screen_height;
+@@ -247,7 +249,7 @@
+ 	*peny = y / count;
+ }
+ 
+-void do_calibrate(int fd, struct calibration_data* cd)
++void do_calibrate(int fd, struct calibration_data* cd, char *conf_file)
+ {
+ 	double ux, uy, lx, ly, cx, cy, dx, dy, sx, sy;
+ 	int diffx, diffy, lcx, lcy;
+@@ -339,8 +341,8 @@
+ 					/* touchscreen starts at the bottom */
+ 
+ 	/* save it */
+-	if ((save = fopen(SAVE_FILE, "w")) == NULL) {
+-		fprintf(stderr, "xtouch: could not save calibration!\n");
++	if ((save = fopen(conf_file, "w")) == NULL) {
++		fprintf(stderr, "xtouch: could not save calibration in %s!\n", conf_file);
+ 		return;
+ 	}
+ 	fprintf(save, "%d %d %d %d %d %d %d %d %d %d\n",
+@@ -360,13 +362,25 @@
+ 	int pendown = 0;
+ 	struct mk712_packet *input;
+ 	FILE *load;
++	struct passwd *u_passwd;
++	struct stat *sbuf;
++	char *conf_file;
++	conf_file = SAVE_FILE;
+ 
+ #ifndef XTOUCH_DRIVER_ONLY
+ 	double dummy;
+ 	int strokecount = 0;	/* for recalibrate stroke */
+ #endif /* XTOUCH_DRIVER_ONLY */
+ 
+-	if ((load = fopen(SAVE_FILE, "r")) != NULL) {
++	/* if default config fails, try user's own */
++	if (stat(conf_file, sbuf) == 0) {
++		if (getuid() != 0 && sbuf->st_size == 0) {
++			u_passwd = getpwuid (getuid());
++			conf_file = strcat(u_passwd->pw_dir, "/.xtouch");
++			fprintf(stderr, "User config file: %s\n", conf_file); 
++		}
++	}
++	if ((load = fopen(conf_file, "r")) != NULL) {
+ 		len = fscanf(load, "%d %d %d %d %d %d %d %d %d %d",
+ 			     &cd.xmax, &cd.ymax, &cd.xmin, &cd.ymin,
+ 			     &cd.ux, &cd.uy, &cd.lx, &cd.ly,
+@@ -394,7 +408,7 @@
+ 
+ 	if (!valid) {
+ #ifndef XTOUCH_DRIVER_ONLY
+-		do_calibrate(pfd, &cd);
++		do_calibrate(pfd, &cd, conf_file);
+ #else /* XTOUCH_DRIVER_ONLY */
+ 		fprintf(stderr, "xtouch: no config for touchscreen.\n");
+ 		exit(1);
+@@ -434,7 +448,7 @@
+ 					/* dummy to wait for release */
+ 					average_press(pfd, &dummy, &dummy);
+ 					if (allow_recalibrate) {
+-						do_calibrate(pfd, &cd);
++						do_calibrate(pfd, &cd, conf_file);
+ 						calculate_scales(&cd);
+ 					}
+ 					strokecount = 0;

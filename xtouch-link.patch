@@ -1,0 +1,14 @@
+--- src/Makefile.link	1970-01-01 09:00:00.000000000 +0100
++++ src/Makefile	2011-01-21 13:44:17.000000000 +0100
+@@ -1,7 +1,10 @@
+ override CFLAGS		+= -Wall
+-override LDFLAGS	+= -L$(TOOLS)/usr/X11R6/lib -lXt -lSM -lICE -lXmu -lXtst -lXext -lX11
+ 
+ xtouch:
++	cc $(LDFLAGS) xtouch.c $(LIBS) -o xtouch -lXtst -lX11
++
++dump-mouse:
++	cc $(LDFLAGS) dump-mouse.c -o dump-mouse
+ 
+ clean::
+ 	$(RM) xtouch *.o *~ core
