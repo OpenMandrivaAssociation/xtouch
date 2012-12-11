@@ -1,5 +1,5 @@
 %define version 0.2
-%define release %mkrel 8
+%define release 8
 
 Summary:		A mk712 touchscreen driver/calibration tool for X 
 Name:			xtouch
@@ -13,10 +13,10 @@ Patch0:			xtouch-correct-device.patch
 Patch1:			xtouch-conf-file.patch
 Patch2:			xtouch-link.patch
 URL:			http://unknown_originally_from_Transmeta's_Midori_Linux			
-BuildRoot:		%{_tmppath}/%{name}-buildroot
-BuildRequires:		libx11-devel
-BuildRequires:		libxtst-devel
-BuildRequires:		libxt-devel
+BuildRequires:		pkgconfig(x11)
+BuildRequires:		pkgconfig(xtst)
+BuildRequires:		pkgconfig(xt)
+BuildRequires:		pkgconfig(xi)
 
 %description
 Xtouch enables the use of a mk712 touch screen as an input device for X.
@@ -57,9 +57,6 @@ chmod +x $RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit.d/%{name}
 cat >> $RPM_BUILD_ROOT%{_sysconfdir}/devfs/conf.d/mk712.conf <<EOF
 REGISTER        ^misc/mk712*        PERMISSIONS     root.root  0644
 EOF
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr (-,root,root)
