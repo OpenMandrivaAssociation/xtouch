@@ -1,5 +1,5 @@
 %define version 0.2
-%define release 8
+%define release 9
 
 Summary:		A mk712 touchscreen driver/calibration tool for X 
 Name:			xtouch
