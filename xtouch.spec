@@ -13,6 +13,7 @@ Patch0:			xtouch-correct-device.patch
 Patch1:			xtouch-conf-file.patch
 Patch2:			xtouch-link.patch
 URL:			https://unknown_originally_from_Transmeta's_Midori_Linux			
+BuildRequires:	make
 BuildRequires:		pkgconfig(x11)
 BuildRequires:		pkgconfig(xtst)
 BuildRequires:		pkgconfig(xt)
